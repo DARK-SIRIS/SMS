@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>💣 Bomber BD</title>
+  <style>
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      background: radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(9,121,17,1) 35%, rgba(0,212,255,1) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      color: #fff;
+      overflow: hidden;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.85);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0, 255, 204, 0.2);
+      text-align: center;
+      width: 400px;
+    }
+    h2 {
+      color: #00ffcc;
+      text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+      font-size: 30px;
+      margin-bottom: 20px;
+    }
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin: 15px 0;
+      border: none;
+      border-radius: 5px;
+      background: #202020;
+      color: #00ffcc;
+      font-size: 16px;
+      outline: none;
+      box-shadow: 0 4px 10px rgba(0, 255, 255, 0.2);
+    }
+    button {
+      background: #00ffcc;
+      color: #000;
+      padding: 12px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      margin: 10px 0;
+      width: 100%;
+      font-size: 16px;
+      transition: all 0.4s ease;
+      box-shadow: 0 4px 15px rgba(0, 255, 204, 0.5);
+    }
+    button:hover {
+      background: #ff007f;
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(255, 0, 127, 0.7);
+      transform: scale(1.05);
+    }
+    .progress {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    #cancelButton {
+      background: #ff007f;
+      margin-top: 10px;
+    }
+    .hidden {
+      display: none;
+    }
+    .credit {
+      margin-top: 20px;
+      font-size: 16px;
+      text-shadow: 0 0 5px #ff007f, 0 0 10px #ff007f;
+      animation: glow 1.5s infinite alternate;
+    }
+    .credit a {
+      color: #ff007f;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    .credit a:hover {
+      color: #00ffcc;
+      text-shadow: 0 0 15px #00ffcc, 0 0 20px #00ffcc;
+    }
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 10px #ff007f, 0 0 20px #7f00ff, 0 0 30px #00ffcc;
+      }
+      to {
+        text-shadow: 0 0 20px #ff00ff, 0 0 30px #7f00ff, 0 0 40px #00ffcc;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Form Container -->
+  <div class="container" id="formContainer">
+    <h2>💣 Bomber BD</h2>
+    <form id="apiForm">
+      <input type="text" name="phone" id="phone" placeholder="📞 Enter phone number • 01234567890" required />
+      <input type="number" name="amount" id="amount" placeholder="🔢 Enter amount" required />
+      <div>
+        <input type="checkbox" name="default_api" id="default_api" checked />
+        <label for="default_api">SMS Somber 💥</label>
+      </div>
+      <div>
+        <input type="checkbox" name="danger_api" id="danger_api" />
+        <label for="danger_api">Call Bomber 📞</label>
+      </div>
+      <button type="submit">🚀 Submit</button>
+      <button type="button" onclick="window.location.href='https://t.me/CobraHntr'">👤 Owner</button>
+    </form>
+    <div class="credit">
+      <p>Channel: <a href="https://t.me/CallSMSemailBomberBD" target="_blank">BD Bomber</a></p>
+    </div>
+  </div>
+
+  <!-- Progress Container -->
+  <div class="container hidden" id="progressContainer">
+    <h2>🚀 Bombing Started</h2>
+    <p class="progress" id="progressText">0 done, 0 left</p>
+    <button id="cancelButton">🛑 Cancel Bombing</button>
+  </div>
+
+  <!-- Done Container -->
+  <div class="container hidden" id="doneContainer">
+    <h2>✅ Bombing Completed</h2>
+    <p class="progress" id="finalText"></p>
+    <button onclick="location.reload();">🔄 Restart</button>
+  </div>
+
+  <script>
+    let current = 0;
+    let total = 0;
+    let cancelled = false;
+
+    document.getElementById('apiForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      // Get form values
+      const phone = document.getElementById('phone').value.trim();
+      total = parseInt(document.getElementById('amount').value.trim());
+      const default_api = document.getElementById('default_api').checked;
+      const danger_api = document.getElementById('danger_api').checked;
+      
+      if (!phone || isNaN(total) || total <= 0) {
+        alert("Please enter valid phone number and amount.");
+        return;
+      }
+      
+      // Hide form container and show progress container
+      document.getElementById('formContainer').classList.add('hidden');
+      document.getElementById('progressContainer').classList.remove('hidden');
+      
+      // Start the bombing process
+      bombIteration(phone, total, default_api, danger_api);
+    });
+
+    document.getElementById('cancelButton').addEventListener('click', function() {
+      cancelled = true;
+      document.getElementById('progressText').innerText = "🛑 Bombing cancelled. " + current + " done, " + (total - current) + " left.";
+    });
+
+    function bombIteration(phone, total, default_api, danger_api) {
+      if (cancelled) {
+        return;
+      }
+      if (current >= total) {
+        // All iterations completed
+        document.getElementById('progressContainer').classList.add('hidden');
+        document.getElementById('doneContainer').classList.remove('hidden');
+        document.getElementById('finalText').innerText = "🎉 Total " + total + " requests processed.";
+        return;
+      }
+      
+      // Prepare data for one iteration AJAX call
+      let formData = new FormData();
+      formData.append('action', 'bomb');
+      formData.append('phone', phone);
+      formData.append('current', current);
+      formData.append('total', total);
+      if (default_api) formData.append('default_api', '1');
+      if (danger_api) formData.append('danger_api', '1');
+      
+      // Use fetch API for AJAX call
+      fetch('', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          current = data.current;
+          document.getElementById('progressText').innerText = "✅ " + current + " done, " + (total - current) + " left.";
+          // Call next iteration after a short delay
+          setTimeout(() => { bombIteration(phone, total, default_api, danger_api); }, 100);
+        } else {
+          document.getElementById('progressText').innerText = "❌ Error occurred. Stopping process.";
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('progressText').innerText = "❌ Error occurred. Stopping process.";
+      });
+    }
+  </script>
+</body>
+</html>
